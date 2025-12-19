@@ -1,15 +1,13 @@
 {
-    "compilerOptions": {
-        "sourceMap": true,
-        "outDir": "dist",
-        "strict": true,
-        "lib": [
-          "esnext"
-        ],
-        "esModuleInterop": true,
-        "module": "ESNext",
-        "target": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true
-      }
+	"compilerOptions": {
+		"sourceMap": true,
+		"outDir": "dist",
+		"strict": true,
+		"lib": ["esnext"],
+		"esModuleInterop": true,
+		"module": "ESNext",
+		"target": "esnext",
+		"moduleResolution": "node",
+		"resolveJsonModule": true
+	}
 }
