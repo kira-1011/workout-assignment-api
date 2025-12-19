@@ -11,6 +11,11 @@ const options = {
 			description:
 				"REST API for workout assignments between trainers and clients",
 		},
+		servers: [
+			{
+				url: "/api",
+			},
+		],
 		components: {
 			securitySchemes: {
 				bearerAuth: {

@@ -31,8 +31,8 @@ const router = Router();
  *       400:
  *         description: Invalid input
  */
-router.post("/register", (req) => {
-	console.log(req.body);
+router.post("/register", (_, res) => {
+	return res.status(501).json({ message: "Not implemented yet" });
 });
 
 /**
@@ -63,8 +63,8 @@ router.post("/register", (req) => {
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", (req) => {
-	console.log(req.body);
+router.post("/login", (_, res) => {
+	return res.status(501).json({ message: "Not implemented yet" });
 });
 
 export { router as authRoutes };
