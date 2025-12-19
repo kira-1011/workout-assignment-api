@@ -45,11 +45,11 @@ const router = Router();
  *         description: Forbidden - clients only
  */
 router.get("/", authenticate, isClient, (req, res) => {
-  // TODO: Implement get my workouts
-  res.status(501).json({
-    message: "Not implemented yet",
-    clientId: req.user?.userId,
-  });
+	// TODO: Implement get my workouts
+	res.status(501).json({
+		message: "Not implemented yet",
+		clientId: req.user?.userId,
+	});
 });
 
 export { router as clientRoutes };
