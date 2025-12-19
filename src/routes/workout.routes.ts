@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticate, isTrainer } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
@@ -32,9 +33,12 @@ const router = Router();
  *       403:
  *         description: Forbidden - trainers only
  */
-router.post("/", (_req, res) => {
-	// TODO: Implement create workout
-	res.status(501).json({ message: "Not implemented yet" });
+router.post("/", authenticate, isTrainer, (req, res) => {
+  // TODO: Implement create workout
+  res.status(501).json({
+    message: "Not implemented yet",
+    trainerId: req.user?.userId,
+  });
 });
 
 /**
@@ -54,9 +58,12 @@ router.post("/", (_req, res) => {
  *       403:
  *         description: Forbidden - trainers only
  */
-router.get("/", (_req, res) => {
-	// TODO: Implement get all workouts
-	res.status(501).json({ message: "Not implemented yet" });
+router.get("/", authenticate, isTrainer, (req, res) => {
+  // TODO: Implement get all workouts
+  res.status(501).json({
+    message: "Not implemented yet",
+    trainerId: req.user?.userId,
+  });
 });
 
 /**
@@ -97,9 +104,13 @@ router.get("/", (_req, res) => {
  *       404:
  *         description: Workout or client not found
  */
-router.post("/:id/assign", (_req, res) => {
-	// TODO: Implement assign workout
-	res.status(501).json({ message: "Not implemented yet" });
+router.post("/:id/assign", authenticate, isTrainer, (req, res) => {
+  // TODO: Implement assign workout
+  res.status(501).json({
+    message: "Not implemented yet",
+    workoutId: req.params.id,
+    trainerId: req.user?.userId,
+  });
 });
 
 export { router as workoutRoutes };

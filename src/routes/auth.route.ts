@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { login, register } from "../controllers/auth.controller";
 
 const router = Router();
 
@@ -18,22 +19,29 @@ const router = Router();
  *             required:
  *               - email
  *               - password
+ *               - role
  *             properties:
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: trainer@example.com
  *               password:
  *                 type: string
  *                 minLength: 6
+ *                 example: password123
+ *               role:
+ *                 type: string
+ *                 enum: [trainer, client]
+ *                 example: trainer
  *     responses:
  *       201:
  *         description: User registered successfully
  *       400:
- *         description: Invalid input
+ *         description: Validation error
+ *       409:
+ *         description: User already exists
  */
-router.post("/register", (_, res) => {
-	return res.status(501).json({ message: "Not implemented yet" });
-});
+router.post("/register", register);
 
 /**
  * @openapi
@@ -41,7 +49,7 @@ router.post("/register", (_, res) => {
  *   post:
  *     tags:
  *       - Auth
- *     summary: Login user
+ *     summary: Login and receive JWT token
  *     requestBody:
  *       required: true
  *       content:
@@ -55,16 +63,39 @@ router.post("/register", (_, res) => {
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: trainer@example.com
  *               password:
  *                 type: string
+ *                 example: password123
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         role:
+ *                           type: string
+ *                     token:
+ *                       type: string
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", (_, res) => {
-	return res.status(501).json({ message: "Not implemented yet" });
-});
+router.post("/login", login);
 
 export { router as authRoutes };

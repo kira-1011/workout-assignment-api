@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticate, isClient } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
@@ -43,9 +44,12 @@ const router = Router();
  *       403:
  *         description: Forbidden - clients only
  */
-router.get("/", (_req, res) => {
-	// TODO: Implement get my workouts
-	res.status(501).json({ message: "Not implemented yet" });
+router.get("/", authenticate, isClient, (req, res) => {
+  // TODO: Implement get my workouts
+  res.status(501).json({
+    message: "Not implemented yet",
+    clientId: req.user?.userId,
+  });
 });
 
 export { router as clientRoutes };
