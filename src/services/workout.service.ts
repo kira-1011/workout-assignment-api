@@ -1,13 +1,13 @@
 import { prisma } from "../lib/prisma";
 import {
-	assignmentResponseSelect,
-	clientAssignmentSelect,
-	workoutListSelect,
-	workoutSelect,
 	type AssignmentResponse,
+	assignmentResponseSelect,
 	type ClientAssignment,
+	clientAssignmentSelect,
 	type WorkoutListItem,
 	type WorkoutResponse,
+	workoutListSelect,
+	workoutSelect,
 } from "../types/api.type";
 
 /**
