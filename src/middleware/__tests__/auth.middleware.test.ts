@@ -1,8 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextFunction, Request, Response } from "express";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { prismaMock } from "../../lib/__mocks__/prisma";
-import { authenticate, authorize, isClient, isTrainer } from "../auth.middleware";
 import * as jwt from "../../utils/jwt";
+import {
+	authenticate,
+	authorize,
+	isClient,
+	isTrainer,
+} from "../auth.middleware";
 
 // Mock the jwt module
 vi.mock("../../utils/jwt", () => ({
@@ -165,7 +170,11 @@ describe("Auth Middleware", () => {
 		});
 
 		it("should call next() if user is a trainer", () => {
-			req.user = { userId: "user-123", email: "test@test.com", role: "trainer" };
+			req.user = {
+				userId: "user-123",
+				email: "test@test.com",
+				role: "trainer",
+			};
 
 			isTrainer(req, res, next);
 
@@ -186,7 +195,11 @@ describe("Auth Middleware", () => {
 		});
 
 		it("should return 403 if user is not a client", () => {
-			req.user = { userId: "user-123", email: "test@test.com", role: "trainer" };
+			req.user = {
+				userId: "user-123",
+				email: "test@test.com",
+				role: "trainer",
+			};
 
 			isClient(req, res, next);
 
@@ -234,7 +247,11 @@ describe("Auth Middleware", () => {
 		});
 
 		it("should call next() if role is allowed", () => {
-			req.user = { userId: "user-123", email: "test@test.com", role: "trainer" };
+			req.user = {
+				userId: "user-123",
+				email: "test@test.com",
+				role: "trainer",
+			};
 			const middleware = authorize("trainer", "client");
 
 			middleware(req, res, next);
@@ -252,4 +269,3 @@ describe("Auth Middleware", () => {
 		});
 	});
 });
-
