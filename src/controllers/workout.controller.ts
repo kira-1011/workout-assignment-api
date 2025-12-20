@@ -1,14 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
 import {
+	assignWorkoutSchema,
+	createWorkoutSchema,
+} from "../schemas/workout.schema.js";
+import {
 	assignWorkout,
 	createWorkout,
 	getClientWorkouts,
 	getTrainerWorkouts,
 } from "../services/workout.service.js";
-import {
-	assignWorkoutSchema,
-	createWorkoutSchema,
-} from "../schemas/workout.schema.js";
 
 /**
  * GET /workouts - Get all workouts for the logged-in trainer
