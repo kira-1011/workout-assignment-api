@@ -1,7 +1,22 @@
 import { Router } from "express";
-import { authenticate, isTrainer } from "../middleware/auth.middleware.js";
+import {
+	authenticate,
+	isClient,
+	isTrainer,
+} from "../middleware/auth.middleware.js";
+import {
+	assignWorkoutHandler,
+	createWorkoutHandler,
+	getMyWorkouts,
+	getWorkouts,
+} from "../controllers/workout.controller.js";
 
 const router = Router();
+const myWorkoutsRouter = Router();
+
+// ============================================
+// TRAINER ROUTES (/workouts)
+// ============================================
 
 /**
  * @openapi
@@ -33,13 +48,7 @@ const router = Router();
  *       403:
  *         description: Forbidden - trainers only
  */
-router.post("/", authenticate, isTrainer, (req, res) => {
-	// TODO: Implement create workout
-	res.status(501).json({
-		message: "Not implemented yet",
-		trainerId: req.user?.userId,
-	});
-});
+router.post("/", authenticate, isTrainer, createWorkoutHandler);
 
 /**
  * @openapi
@@ -58,13 +67,7 @@ router.post("/", authenticate, isTrainer, (req, res) => {
  *       403:
  *         description: Forbidden - trainers only
  */
-router.get("/", authenticate, isTrainer, (req, res) => {
-	// TODO: Implement get all workouts
-	res.status(501).json({
-		message: "Not implemented yet",
-		trainerId: req.user?.userId,
-	});
-});
+router.get("/", authenticate, isTrainer, getWorkouts);
 
 /**
  * @openapi
@@ -104,13 +107,53 @@ router.get("/", authenticate, isTrainer, (req, res) => {
  *       404:
  *         description: Workout or client not found
  */
-router.post("/:id/assign", authenticate, isTrainer, (req, res) => {
-	// TODO: Implement assign workout
-	res.status(501).json({
-		message: "Not implemented yet",
-		workoutId: req.params.id,
-		trainerId: req.user?.userId,
-	});
-});
+router.post("/:id/assign", authenticate, isTrainer, assignWorkoutHandler);
 
-export { router as workoutRoutes };
+// ============================================
+// CLIENT ROUTES (/my-workouts)
+// ============================================
+
+/**
+ * @openapi
+ * /my-workouts:
+ *   get:
+ *     tags:
+ *       - Client
+ *     summary: Get assigned workouts (client only)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of assigned workouts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   workoutId:
+ *                     type: string
+ *                   assignedDate:
+ *                     type: string
+ *                     format: date-time
+ *                   status:
+ *                     type: string
+ *                     enum: [assigned, cancelled]
+ *                   workout:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - clients only
+ */
+myWorkoutsRouter.get("/", authenticate, isClient, getMyWorkouts);
+
+export { router as workoutRoutes, myWorkoutsRouter as myWorkoutRoutes };

@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import { AuthError } from "../services/auth.service.js";
+import { WorkoutError } from "../services/workout.service.js";
 
 const errorHandler = (
 	err: Error,
@@ -20,6 +22,25 @@ const errorHandler = (
 		});
 		return;
 	}
+
+	// Auth errors
+	if (err instanceof AuthError) {
+		res.status(err.statusCode).json({
+			success: false,
+			message: err.message,
+		});
+		return;
+	}
+
+	// Workout errors
+	if (err instanceof WorkoutError) {
+		res.status(err.statusCode).json({
+			success: false,
+			message: err.message,
+		});
+		return;
+	}
+
 	res.status(500).json({ success: false, message: "Internal server error" });
 };
 
