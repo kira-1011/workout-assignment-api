@@ -1,4 +1,9 @@
+import { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
+import type {
+	AssignWorkoutInput,
+	CreateWorkoutInput,
+} from "../schemas/workout.schema";
 import {
 	type AssignmentResponse,
 	assignmentResponseSelect,
@@ -41,12 +46,12 @@ export async function getClientWorkouts(
  */
 export async function createWorkout(
 	trainerId: string,
-	data: { name: string; description?: string },
+	payload: CreateWorkoutInput,
 ): Promise<WorkoutResponse> {
 	return prisma.workout.create({
 		data: {
-			name: data.name,
-			description: data.description,
+			name: payload.name,
+			description: payload.description,
 			trainerId,
 		},
 		select: workoutSelect,
@@ -59,7 +64,7 @@ export async function createWorkout(
 export async function assignWorkout(
 	trainerId: string,
 	workoutId: string,
-	clientId: string,
+	payload: AssignWorkoutInput,
 ): Promise<AssignmentResponse> {
 	// Verify the workout exists and belongs to this trainer
 	const workout = await prisma.workout.findUnique({
@@ -77,7 +82,7 @@ export async function assignWorkout(
 
 	// Verify the client exists and has the client role
 	const client = await prisma.user.findUnique({
-		where: { id: clientId },
+		where: { id: payload.clientId },
 		select: { id: true, role: true, email: true },
 	});
 
@@ -90,13 +95,25 @@ export async function assignWorkout(
 	}
 
 	// Create the assignment
-	return prisma.workoutAssignment.create({
-		data: {
-			workoutId,
-			clientId,
-		},
-		select: assignmentResponseSelect,
-	});
+	try {
+		return await prisma.workoutAssignment.create({
+			data: {
+				workoutId,
+				clientId: payload.clientId,
+			},
+			select: assignmentResponseSelect,
+		});
+	} catch (error) {
+		// Handle unique constraint violation (duplicate assignment)
+		if (
+			error instanceof Prisma.PrismaClientKnownRequestError &&
+			error.code === "P2002"
+		) {
+			throw new WorkoutError("Workout already assigned to this client", 409);
+		}
+
+		throw new WorkoutError("Failed to assign workout", 500);
+	}
 }
 
 // Custom error class for workout errors

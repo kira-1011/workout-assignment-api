@@ -117,9 +117,9 @@ export async function assignWorkoutHandler(
 		}
 
 		const workoutId = req.params.id;
-		const { clientId } = assignWorkoutSchema.parse(req.body);
+		const payload = assignWorkoutSchema.parse(req.body);
 
-		const assignment = await assignWorkout(trainerId, workoutId, clientId);
+		const assignment = await assignWorkout(trainerId, workoutId, payload);
 
 		const response: AssignmentCreateResponse = {
 			success: true,

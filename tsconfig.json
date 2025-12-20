@@ -8,6 +8,8 @@
 		"module": "ESNext",
 		"target": "esnext",
 		"moduleResolution": "node",
-		"resolveJsonModule": true
-	}
+		"resolveJsonModule": true,
+		"skipLibCheck": true
+	},
+	"exclude": ["node_modules", "dist"]
 }
