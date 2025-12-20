@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { prisma } from "../lib/prisma.js";
-import { type JwtPayload, verifyToken } from "../utils/jwt.js";
+import { prisma } from "../lib/prisma";
+import { type JwtPayload, verifyToken } from "../utils/jwt";
 
 // Extend Express Request type to include user
 declare global {

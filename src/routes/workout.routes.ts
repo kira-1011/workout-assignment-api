@@ -4,12 +4,12 @@ import {
 	createWorkoutHandler,
 	getMyWorkouts,
 	getWorkouts,
-} from "../controllers/workout.controller.js";
+} from "../controllers/workout.controller";
 import {
 	authenticate,
 	isClient,
 	isTrainer,
-} from "../middleware/auth.middleware.js";
+} from "../middleware/auth.middleware";
 
 const router = Router();
 const myWorkoutsRouter = Router();

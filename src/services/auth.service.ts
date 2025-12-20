@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "../lib/prisma.js";
-import type { LoginInput, RegisterInput } from "../schemas/auth.schema.js";
-import { signToken } from "../utils/jwt.js";
+import { prisma } from "../lib/prisma";
+import type { LoginInput, RegisterInput } from "../schemas/auth.schema";
+import type { AuthData } from "../types/api.type";
+import { signToken } from "../utils/jwt";
 
-export async function registerUser(data: RegisterInput) {
+export async function registerUser(data: RegisterInput): Promise<AuthData> {
 	// Check if user already exists
 	const existingUser = await prisma.user.findUnique({
 		where: { email: data.email },
@@ -42,7 +43,7 @@ export async function registerUser(data: RegisterInput) {
 	};
 }
 
-export async function loginUser(data: LoginInput) {
+export async function loginUser(data: LoginInput): Promise<AuthData> {
 	// Find user by email
 	const user = await prisma.user.findUnique({
 		where: { email: data.email },

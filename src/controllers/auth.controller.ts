@@ -1,42 +1,47 @@
 import type { NextFunction, Request, Response } from "express";
-import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
-import { loginUser, registerUser } from "../services/auth.service.js";
+import { loginSchema, registerSchema } from "../schemas/auth.schema";
+import { loginUser, registerUser } from "../services/auth.service";
+import type { AuthResponse } from "../types/api.type";
 
+/**
+ * POST /auth/register - Register a new user
+ * @returns {AuthResponse}
+ */
 export async function register(
 	req: Request,
 	res: Response,
 	next: NextFunction,
 ) {
 	try {
-		// Validate input
 		const data = registerSchema.parse(req.body);
-
-		// Register user
 		const result = await registerUser(data);
 
-		res.status(201).json({
+		const response: AuthResponse = {
 			success: true,
 			message: "User registered successfully",
 			data: result,
-		});
+		};
+		res.status(201).json(response);
 	} catch (error) {
 		next(error);
 	}
 }
 
+/**
+ * POST /auth/login - Login and receive JWT token
+ * @returns {AuthResponse}
+ */
 export async function login(req: Request, res: Response, next: NextFunction) {
 	try {
-		// Validate input
 		const data = loginSchema.parse(req.body);
-
-		// Login user
 		const result = await loginUser(data);
 
-		res.status(200).json({
+		const response: AuthResponse = {
 			success: true,
 			message: "Login successful",
 			data: result,
-		});
+		};
+		res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}

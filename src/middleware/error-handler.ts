@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { AuthError } from "../services/auth.service.js";
-import { WorkoutError } from "../services/workout.service.js";
+import { AuthError } from "../services/auth.service";
+import { WorkoutError } from "../services/workout.service";
 
 const errorHandler = (
 	err: Error,

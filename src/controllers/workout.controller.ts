@@ -2,16 +2,23 @@ import type { NextFunction, Request, Response } from "express";
 import {
 	assignWorkoutSchema,
 	createWorkoutSchema,
-} from "../schemas/workout.schema.js";
+} from "../schemas/workout.schema";
 import {
 	assignWorkout,
 	createWorkout,
 	getClientWorkouts,
 	getTrainerWorkouts,
-} from "../services/workout.service.js";
+} from "../services/workout.service";
+import type {
+	AssignmentCreateResponse,
+	ClientAssignmentsResponse,
+	WorkoutCreateResponse,
+	WorkoutListResponse,
+} from "../types/api.type";
 
 /**
  * GET /workouts - Get all workouts for the logged-in trainer
+ * @returns {WorkoutListResponse}
  */
 export async function getWorkouts(
 	req: Request,
@@ -26,10 +33,11 @@ export async function getWorkouts(
 		}
 		const workouts = await getTrainerWorkouts(trainerId);
 
-		res.status(200).json({
+		const response: WorkoutListResponse = {
 			success: true,
 			data: workouts,
-		});
+		};
+		res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}
@@ -37,6 +45,7 @@ export async function getWorkouts(
 
 /**
  * GET /my-workouts - Get all assigned workouts for the logged-in client
+ * @returns {ClientAssignmentsResponse}
  */
 export async function getMyWorkouts(
 	req: Request,
@@ -51,10 +60,11 @@ export async function getMyWorkouts(
 		}
 		const assignments = await getClientWorkouts(clientId);
 
-		res.status(200).json({
+		const response: ClientAssignmentsResponse = {
 			success: true,
 			data: assignments,
-		});
+		};
+		res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}
@@ -62,6 +72,7 @@ export async function getMyWorkouts(
 
 /**
  * POST /workouts - Create a new workout
+ * @returns {WorkoutCreateResponse}
  */
 export async function createWorkoutHandler(
 	req: Request,
@@ -78,11 +89,12 @@ export async function createWorkoutHandler(
 		const data = createWorkoutSchema.parse(req.body);
 		const workout = await createWorkout(trainerId, data);
 
-		res.status(201).json({
+		const response: WorkoutCreateResponse = {
 			success: true,
 			message: "Workout created successfully",
 			data: workout,
-		});
+		};
+		res.status(201).json(response);
 	} catch (error) {
 		next(error);
 	}
@@ -90,6 +102,7 @@ export async function createWorkoutHandler(
 
 /**
  * POST /workouts/:id/assign - Assign a workout to a client
+ * @returns {AssignmentCreateResponse}
  */
 export async function assignWorkoutHandler(
 	req: Request,
@@ -108,11 +121,12 @@ export async function assignWorkoutHandler(
 
 		const assignment = await assignWorkout(trainerId, workoutId, clientId);
 
-		res.status(201).json({
+		const response: AssignmentCreateResponse = {
 			success: true,
 			message: "Workout assigned successfully",
 			data: assignment,
-		});
+		};
+		res.status(201).json(response);
 	} catch (error) {
 		next(error);
 	}

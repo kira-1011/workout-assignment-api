@@ -1,62 +1,39 @@
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
+import {
+	assignmentResponseSelect,
+	clientAssignmentSelect,
+	workoutListSelect,
+	workoutSelect,
+	type AssignmentResponse,
+	type ClientAssignment,
+	type WorkoutListItem,
+	type WorkoutResponse,
+} from "../types/api.type";
 
 /**
  * Get all workouts created by a specific trainer
  */
-export async function getTrainerWorkouts(trainerId: string) {
-	const workouts = await prisma.workout.findMany({
+export async function getTrainerWorkouts(
+	trainerId: string,
+): Promise<WorkoutListItem[]> {
+	return prisma.workout.findMany({
 		where: { trainerId },
-		select: {
-			id: true,
-			name: true,
-			description: true,
-			createdAt: true,
-			updatedAt: true,
-			_count: {
-				select: { assignments: true },
-			},
-		},
+		select: workoutListSelect,
 		orderBy: { createdAt: "desc" },
 	});
-
-	return workouts.map((workout) => ({
-		id: workout.id,
-		name: workout.name,
-		description: workout.description,
-		createdAt: workout.createdAt,
-		updatedAt: workout.updatedAt,
-		assignmentCount: workout._count.assignments,
-	}));
 }
 
 /**
  * Get all workout assignments for a specific client
  */
-export async function getClientWorkouts(clientId: string) {
-	const assignments = await prisma.workoutAssignment.findMany({
+export async function getClientWorkouts(
+	clientId: string,
+): Promise<ClientAssignment[]> {
+	return prisma.workoutAssignment.findMany({
 		where: { clientId },
-		select: {
-			id: true,
-			assignedDate: true,
-			status: true,
-			workout: {
-				select: {
-					id: true,
-					name: true,
-					description: true,
-					trainer: {
-						select: {
-							id: true,
-							email: true,
-						},
-					},
-				},
-			},
-		},
+		select: clientAssignmentSelect,
 		orderBy: { assignedDate: "desc" },
 	});
-
-	return assignments;
 }
 
 /**
@@ -65,22 +42,15 @@ export async function getClientWorkouts(clientId: string) {
 export async function createWorkout(
 	trainerId: string,
 	data: { name: string; description?: string },
-) {
-	const workout = await prisma.workout.create({
+): Promise<WorkoutResponse> {
+	return prisma.workout.create({
 		data: {
 			name: data.name,
 			description: data.description,
 			trainerId,
 		},
-		select: {
-			id: true,
-			name: true,
-			description: true,
-			createdAt: true,
-		},
+		select: workoutSelect,
 	});
-
-	return workout;
 }
 
 /**
@@ -90,7 +60,7 @@ export async function assignWorkout(
 	trainerId: string,
 	workoutId: string,
 	clientId: string,
-) {
+): Promise<AssignmentResponse> {
 	// Verify the workout exists and belongs to this trainer
 	const workout = await prisma.workout.findUnique({
 		where: { id: workoutId },
@@ -120,31 +90,13 @@ export async function assignWorkout(
 	}
 
 	// Create the assignment
-	const assignment = await prisma.workoutAssignment.create({
+	return prisma.workoutAssignment.create({
 		data: {
 			workoutId,
 			clientId,
 		},
-		select: {
-			id: true,
-			assignedDate: true,
-			status: true,
-			workout: {
-				select: {
-					id: true,
-					name: true,
-				},
-			},
-			client: {
-				select: {
-					id: true,
-					email: true,
-				},
-			},
-		},
+		select: assignmentResponseSelect,
 	});
-
-	return assignment;
 }
 
 // Custom error class for workout errors

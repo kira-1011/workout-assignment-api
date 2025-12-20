@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
-import { env } from "./config/env.js";
-import { swaggerSpec, swaggerUi } from "./config/swagger.js";
+import { env } from "./config/env";
+import { swaggerSpec, swaggerUi } from "./config/swagger";
 import errorHandler from "./middleware/error-handler";
 import { apiRoutes } from "./routes/index";
 
